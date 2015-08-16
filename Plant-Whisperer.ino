@@ -20,7 +20,6 @@ Arduino - RGB Common Cathode LED
   GND --> GND
   Pin 3 --> Green
   Pin 4 --> Blue
-
 */
 const int red = 2;
 const int green = 3;
