@@ -30,7 +30,7 @@ const int RxPin = 5;
 SoftwareSerial LCD = SoftwareSerial(225, RxPin); //LCD is the Parallax 2 x 16 Serial LCD
 
 void setup() {
-  LCD.begin(9600);                  //turns on LC
+  LCD.begin(9600);                  //turns on LCD
   delay(5);                         //required delay
   LCD.write(17);                    //turns on backlight
   pinMode(A0, INPUT);               //sets up analog pin 0 as input
