@@ -1,7 +1,8 @@
 /* 
 Created by River Alexander http://www.river-alexander.com
-This project turns on different colors on an RGB Common Cathode LED and then the LCD shows "what the plant is saying"
-(ex. I need water.) It is actually a quite simple project.
+This project turns on different colors on an RGB Common Cathode LED and then the LCD shows what the plant is
+"thinking" (ex. I need water.) It is actually a quite simple project. This is an unfinished project, I plan to
+update with a photocell, humidity/temperature sensor, water pump, and Twitter API.
 
 Connection pins:
 
@@ -21,13 +22,14 @@ Arduino - RGB Common Cathode LED
   Pin 3 --> Green
   Pin 4 --> Blue
 */
+
 const int red = 2;
 const int green = 3;
 const int blue = 4;
-const int RxPin = 5;
+const int rxPin = 5;
 
 #include <SoftwareSerial.h>
-SoftwareSerial LCD = SoftwareSerial(225, RxPin); //LCD is the Parallax 2 x 16 Serial LCD
+SoftwareSerial LCD = SoftwareSerial(225, rxPin); //LCD is the Parallax 2 x 16 Serial LCD
 
 void setup() {
   LCD.begin(9600);                  //turns on LCD
@@ -37,8 +39,8 @@ void setup() {
   pinMode(red, OUTPUT);             // red led
   pinMode(green, OUTPUT);           // green led
   pinMode(blue, OUTPUT);            // blue led
-  pinMode(RxPin, OUTPUT);           // Parallax 2 x 16 Serial LCD
-  digitalWrite(RxPin, HIGH);
+  pinMode(rxPin, OUTPUT);           // Parallax 2 x 16 Serial LCD
+  digitalWrite(rxPin, HIGH);
 }
 
 void loop()
@@ -49,9 +51,9 @@ void loop()
   if (moisture >= 1000) {
     LCD.write(12);                  //Clears LCD
     delay(5);
-    LCD.print("Plant: You");        //First line
+    LCD.print("Sensor is");         //First line
     LCD.write(13);                  //Goes to line 2
-    LCD.print("unplugged me!");     //Second line
+    LCD.print("disconnected");      //Second line
     LCD.write(212);                 //Quarter note
     LCD.write(220);                 //Tone
     delay(3000);
