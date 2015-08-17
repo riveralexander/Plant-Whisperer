@@ -1,7 +1,7 @@
 /* 
 Created by River Alexander http://www.river-alexander.com
 This project turns on different colors on an RGB Common Cathode LED and then the LCD shows what the plant is
-"thinking" (ex. I need water.) It is actually a quite simple project. This is an unfinished project, I plan to
+"thinking" (ex. I need water.) It is actually a quite simple project. This project is unfinished, I plan to
 update with a photocell, humidity/temperature sensor, water pump, and Twitter API.
 
 Connection pins:
