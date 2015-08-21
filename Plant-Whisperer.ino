@@ -2,7 +2,7 @@
 Created by River Alexander http://www.river-alexander.com
 This project turns on different colors on an RGB Common Cathode LED and then the LCD shows what the plant is
 "thinking" (ex. I need water.) It is actually a quite simple project. This is an unfinished project, I plan to
-update with a temperature sensor, water pump, and Twitter API.
+update with a temperature sensor, and Twitter API (which will replace the push button).
 
 Connection pins:
 
@@ -16,9 +16,17 @@ Arduino - Parallax 2 x 16 Serial LCD (Backlit) https://www.parallax.com/product/
   5V --> 5V
   GND --> GND
   
+Arduino - Water Pump
+  Pin 7 --> 3V or 5V
+  GND --> GND
+  
+Arduino - Button
+Pin 6 --> one leg --> resistor --> GND
+5V --> another leg
+
 Arduino - Photocell
   3-5V --> one end
-  A1 --> 10kΩ resistor --> other end
+  A1 --> 10kΩ resistor --> another end
 
 Arduino - RGB Common Cathode LED
   Pin 2 --> Red
@@ -31,6 +39,8 @@ const int redPin = 2;
 const int greenPin = 3;
 const int bluePin = 4;
 const int rxPin = 5;
+const int buttonPin = 6;
+const int waterPin = 7;
 
 #include <SoftwareSerial.h>         //include library containing Parallax 2 x 16 Serial LCD functions
 SoftwareSerial LCD = SoftwareSerial(225, rxPin); //LCD is the Parallax 2 x 16 Serial LCD
@@ -46,10 +56,13 @@ void setup() {
   LCD.write(17);                    //turns on backlight
   pinMode(A0, INPUT);               //sets up analog pin 0 as input
   pinMode(A1, INPUT);
+  pinMode(buttonPin, INPUT);        //button
   pinMode(redPin, OUTPUT);          // red led
   pinMode(greenPin, OUTPUT);        // green led
   pinMode(bluePin, OUTPUT);         // blue led
   pinMode(rxPin, OUTPUT);           // Parallax 2 x 16 Serial LCD
+  pinMode(buttonPin, OUTPUT);       //Button
+  pinMode(waterPin, OUTPUT);        //water pump
   digitalWrite(rxPin, HIGH);
 }
 
@@ -57,6 +70,16 @@ void loop()
 {
   int moisture = analogRead(A0);    //plant soil moisture sample
   int light = analogRead(A1);       //plant light sample
+  
+  //if pressed, turn on water pump
+  if (digitalRead(buttonPin) == HIGH) {
+    digitalWrite(waterPin, HIGH);
+  }
+  
+  //if not pressed, keep water pump off
+  else {
+    digitalWrite(waterPin, LOW);
+  }
 
   //Sensor is not in soil or disconnected:
   if (moisture >= 1000) {
