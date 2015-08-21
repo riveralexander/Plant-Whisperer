@@ -1,8 +1,8 @@
 /* 
 Created by River Alexander http://www.river-alexander.com
 This project turns on different colors on an RGB Common Cathode LED and then the LCD shows what the plant is
-"thinking" (ex. I need water.) It is actually a quite simple project. This is an unfinished project, I plan to
-update with a temperature sensor, water pump, and Twitter API.
+"thinking" (ex. I need water.) It is actually a quite simple project. This project is unfinished, I plan to
+update with a photocell, humidity/temperature sensor, water pump, and Twitter API.
 
 Connection pins:
 
@@ -15,10 +15,6 @@ Arduino - Parallax 2 x 16 Serial LCD (Backlit) https://www.parallax.com/product/
   Pin 5 --> Rx
   5V --> 5V
   GND --> GND
-  
-Arduino - Photocell
-  3-5V --> one end
-  A1 --> 10kΩ resistor --> other end
 
 Arduino - RGB Common Cathode LED
   Pin 2 --> Red
@@ -27,100 +23,78 @@ Arduino - RGB Common Cathode LED
   Pin 4 --> Blue
 */
 
-const int redPin = 2;
-const int greenPin = 3;
-const int bluePin = 4;
+const int red = 2;
+const int green = 3;
+const int blue = 4;
 const int rxPin = 5;
 
-#include <SoftwareSerial.h>         //include library containing Parallax 2 x 16 Serial LCD functions
+#include <SoftwareSerial.h>
 SoftwareSerial LCD = SoftwareSerial(225, rxPin); //LCD is the Parallax 2 x 16 Serial LCD
-
-#include <JeeLib.h>                 //include library containing low power functions
-ISR(WDT_vect) {
-Sleepy::watchdogEvent();            //setup for low power waiting
-}
 
 void setup() {
   LCD.begin(9600);                  //turns on LCD
   delay(5);                         //required delay
   LCD.write(17);                    //turns on backlight
   pinMode(A0, INPUT);               //sets up analog pin 0 as input
-  pinMode(A1, INPUT);
-  pinMode(redPin, OUTPUT);          // red led
-  pinMode(greenPin, OUTPUT);        // green led
-  pinMode(bluePin, OUTPUT);         // blue led
+  pinMode(red, OUTPUT);             // red led
+  pinMode(green, OUTPUT);           // green led
+  pinMode(blue, OUTPUT);            // blue led
   pinMode(rxPin, OUTPUT);           // Parallax 2 x 16 Serial LCD
   digitalWrite(rxPin, HIGH);
 }
 
 void loop()
 {
-  int moisture = analogRead(A0);    //plant soil moisture sample
-  int light = analogRead(A1);       //plant light sample
+  int moisture = analogRead(A0); //Plant soil sample
 
   //Sensor is not in soil or disconnected:
   if (moisture >= 1000) {
-    LCD.write(12);                  //clears LCD
+    LCD.write(12);                  //Clears LCD
     delay(5);
-    LCD.print("Sensor is");         //first line
-    LCD.write(13);                  //goes to line 2
-    LCD.print("disconnected");      //second line
-    LCD.write(212);                 //quarter note
-    LCD.write(220);                 //tone
+    LCD.print("Sensor is");         //First line
+    LCD.write(13);                  //Goes to line 2
+    LCD.print("disconnected");      //Second line
+    LCD.write(212);                 //Quarter note
+    LCD.write(220);                 //Tone
     delay(3000);
-    setColor(255, 0, 255);          //turns on purple
+    digitalWrite(red, HIGH);        //Turns on red LED
+    digitalWrite(green, LOW);
+    digitalWrite(blue, HIGH);       //Turns on blue LED (combines to make purple)
   }
   
   //Plant needs water:
   if (moisture < 1000 && moisture >= 600) {
-    LCD.write(12);                  //clears LCD
+    LCD.write(12);                  //Clears LCD
     delay(5);
-    LCD.print("Plant: I'm");        //first line
-    LCD.write(13);                  //goes to line 2
-    LCD.print("thirsty.");          //second line
-    setColor(255, 0, 0);            //turns on red
+    LCD.print("Plant: I'm");        //First line
+    LCD.write(13);                  //Goes to line 2
+    LCD.print("thirsty.");          //Second line
+    digitalWrite(red, HIGH);        //Turns on red LED
+    digitalWrite(green, LOW);
+    digitalWrite(blue, LOW);
   }
   
   //Plant is watered:
   if (moisture < 600 && moisture >= 370) {
-    LCD.write(12);                  //clears LCD
+    LCD.write(12);                  //Clears LCD
     delay(5);
-    LCD.print("Plant: I'm good.");  //first line
-  /*LCD.write(13);                  //goes to line 2
-    LCD.print("");                  //second line*/
-    setColor(0, 255, 0);            //turns on green
+    LCD.print("Plant: I'm good.");  //First line
+    digitalWrite(red, LOW);
+    digitalWrite(green, HIGH);      //Turns on green LED
+    digitalWrite(blue, LOW);
   }
   
   //Plant is overwatered:
   if (moisture < 370) {
-    LCD.write(12);                  //clears LCD
+    LCD.write(12);                  //Clears LCD
     delay(5);
-    LCD.print("Plant: AHHHHH!");    //first line
-    LCD.write(13);                  //goes to line 2
-    LCD.print("I'm drowning!!");    //second line
-    setColor(0, 0, 255);            //turns on blue
+    LCD.print("Plant: AHHHHH!");    //First line
+    LCD.write(13);                  //Goes to line 2
+    LCD.print("I'm drowning!!");    //Second line
+    digitalWrite(red, LOW);
+    digitalWrite(green, LOW);
+    digitalWrite(blue, HIGH);       //Turns on blue LED
   }
   
-  Sleepy::loseSomeTime(5000);      //replaces delay and saves power
-  
-  if (light < 949) {
-    LCD.write(12);                  //clears LCD
-    delay(5);
-    LCD.print("Plant: I need");     //first line
-    LCD.write(13);                  //goes to second line
-    LCD.print("more sunlight");     //second line
-    setColor(255, 255, 0);          //turns on yellow
-  }
-  Sleepy::loseSomeTime(5000);       //replaces delay and saves power
-}
-
-void setColor(int red, int green, int blue) {
-  #ifdef COMMON_ANODE
-    red = 255 - red;
-    green = 255 - green;
-    blue = 255 - blue;
-  #endif
-  analogWrite(redPin, red);
-  analogWrite(greenPin, green);
-  analogWrite(bluePin, blue);  
+  delay(50);
 }
