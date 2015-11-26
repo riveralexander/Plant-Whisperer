@@ -1,11 +1,16 @@
 //The Plant Whisperer
 /*
 Created by River Alexander http://www.twitter.com/riveralexander
-This project shows what your plant is "thinking" (ex. "I need water"or 
-"I need more sunlight") then prints it to an LCD screen. This project uses:
-(1)RGB Common Cathode LED, (1)Parallax 16x2 LCD Screen, (1)Moisture Sensor,
-(1)Photocell,(1)Humidity/Temperature Sensor, (1)Water pump, (1)Button, &
-(1)Arduino Uno.
+This project shows what your plant is "thinking" (ex. "I need water" or "I need more sunlight") then prints it to an LCD screen. 
+This project uses:
+(1)RGB Common Cathode LED
+(1)Parallax 16x2 LCD Screen
+(1)Moisture Sensor
+(1)Photocell
+(1)Humidity/Temperature Sensor
+(1)Water pump
+(1)Button
+(1)Arduino MEGA or Uno
 */
 
 const int waterPumpPin = 7;
